@@ -36,37 +36,26 @@ public class DeezerLoginActivity extends AppCompatActivity {
         DeezerWebViewClient client = new DeezerWebViewClient(this);
         deezerWebview.setWebViewClient(client);
         deezerWebview.getSettings().setJavaScriptEnabled(true);
-        deezerWebview.loadUrl("https://connect.deezer.com/oauth/auth.php?app_id=" + client.getAppId() + "&redirect_uri=" + client.getRedirectUrl());
+        deezerWebview.loadUrl("https://connect.deezer.com/oauth/auth.php?app_id=" + client.getAppId()
+                + "&redirect_uri=" + client.getRedirectUrl()
+                + "&response_type=token");
     }
 
     public void oauthLogin(final String url)
     {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                StorageReader dbReader = new StorageReader(getApplicationContext());
-                SQLiteDatabase db = dbReader.getWritableDatabase();
+        StorageReader dbReader = new StorageReader(getApplicationContext());
+        SQLiteDatabase db = dbReader.getWritableDatabase();
 
-                String token = response.split("&")[0].split("=")[1];
-                String expiration = response.split("&")[1].split("=")[1];
-                Calendar calendar = Calendar.getInstance();
-                calendar.add(Calendar.SECOND, Integer.parseInt(expiration));
+        String token = url.split("&")[0].split("=")[1];
+        String expiration = url.split("&")[1].split("=")[1];
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, Integer.parseInt(expiration));
 
-                ContentValues values = new ContentValues();
-                values.put(StorageContract.StorageEntry.AUTH_COLUMN_KEY, token);
-                values.put(StorageContract.StorageEntry.AUTH_COLUMN_EXPIRATION_TIME, calendar.getTime().toString());
-                db.insert(StorageContract.StorageEntry.AUTH_TABLE_NAME, null, values);
+        ContentValues values = new ContentValues();
+        values.put(StorageContract.StorageEntry.AUTH_COLUMN_KEY, token);
+        values.put(StorageContract.StorageEntry.AUTH_COLUMN_EXPIRATION_TIME, calendar.getTime().toString());
+        db.insert(StorageContract.StorageEntry.AUTH_TABLE_NAME, null, values);
 
-                finish();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("FINDTHELYRICS", "Error during OAuth second callback");
-            }
-        });
-
-        queue.add(request);
+        finish();
     }
 }

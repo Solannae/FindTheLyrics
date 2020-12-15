@@ -11,7 +11,6 @@ import java.net.URLEncoder;
 public class DeezerWebViewClient extends WebViewClient {
     private final String redirectUrl = "http://localhost";
     private final int appId = 449382;
-    private final String appSecret = "7ef61a9828604defb38153fc3a0138b6";
     private final String oauthUrl = "https://connect.deezer.com/oauth/access_token.php";
     private DeezerLoginActivity linkedActivity;
 
@@ -26,9 +25,8 @@ public class DeezerWebViewClient extends WebViewClient {
         if (url.indexOf(redirectUrl) == 0)
         {
             view.stopLoading();
-            String code = Uri.parse(url).getQueryParameter("code");
-            String finalUrl = oauthUrl + "?app_id=" + appId + "&secret=" + appSecret + "&code=" + code;
-            linkedActivity.oauthLogin(finalUrl);
+            Log.d("FINDTHELYRICS", url);
+            linkedActivity.oauthLogin(url);
         }
     }
 
