@@ -37,11 +37,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         reader = new StorageReader(this);
+        database = reader.getWritableDatabase();
     }
 
     /*public void onClick(View view)
     {
-        Intent intent = new Intent(this, DeezerLoginActivity.class);
+        //Intent intent = new Intent(this, DeezerLoginActivity.class);
+        Intent intent = new Intent(this, SearchActivity.class);
         startActivity(intent);
     }*/
 
