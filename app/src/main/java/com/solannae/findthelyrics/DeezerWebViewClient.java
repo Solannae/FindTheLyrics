@@ -1,12 +1,9 @@
 package com.solannae.findthelyrics;
 
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
-import java.net.URLEncoder;
 
 public class DeezerWebViewClient extends WebViewClient {
     private final String redirectUrl = "http://localhost";

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.accounts.AccountManager;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -55,6 +56,10 @@ public class DeezerLoginActivity extends AppCompatActivity {
         values.put(StorageContract.StorageEntry.AUTH_COLUMN_KEY, token);
         values.put(StorageContract.StorageEntry.AUTH_COLUMN_EXPIRATION_TIME, calendar.getTime().toString());
         db.insert(StorageContract.StorageEntry.AUTH_TABLE_NAME, null, values);
+
+        Intent intent = new Intent(this, SearchActivity.class);
+        intent.putExtra("auth", token);
+        startActivity(intent);
 
         finish();
     }

@@ -33,6 +33,8 @@ public class SearchActivity extends AppCompatActivity {
         searchTextInput = findViewById(R.id.searchTextInput);
         searchButton = findViewById(R.id.searchButton);
 
+        auth_token = getIntent().getStringExtra("auth");
+
         searchView.setHasFixedSize(true);
         searchView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -66,7 +68,7 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-    private void GetLyrics(int songId)
+    public void GetLyrics(int songId)
     {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.deezer.com/")
