@@ -22,6 +22,8 @@ public class SearchActivity extends AppCompatActivity {
     private Button searchButton;
 
     private DeezerSongRequestModel response;
+    private LyricsModel playedLyrics;
+    private String auth_token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,27 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<DeezerSongRequestModel> call, Throwable t) {
                 Log.e("Retrofit", "Failed to get songs from Deezer API");
+            }
+        });
+    }
+
+    private void GetLyrics(int songId)
+    {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://www.deezer.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        SearchService service = retrofit.create(SearchService.class);
+        service.getLyrics("song.getLyrics", "1.0", auth_token, songId).enqueue(new Callback<LyricsModel>() {
+            @Override
+            public void onResponse(Call<LyricsModel> call, Response<LyricsModel> response) {
+                playedLyrics = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<LyricsModel> call, Throwable t) {
+                Log.e("Retrofit", "Failed to get lyrics from Deezer API");
             }
         });
     }
