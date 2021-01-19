@@ -2,19 +2,21 @@ package com.solannae.findthelyrics;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Dictionary;
 
-public class LyricsModel {
+public class LyricsModel implements Serializable {
     @SerializedName("error")
-    private ArrayList<String> error;
+    private Dictionary<String, String> error;
     @SerializedName("results")
     private ResultItem results;
 
-    public ArrayList<String> getError() {
+    public Dictionary<String, String> getError() {
         return error;
     }
 
-    public void setError(ArrayList<String> error) {
+    public void setError(Dictionary<String, String> error) {
         this.error = error;
     }
 

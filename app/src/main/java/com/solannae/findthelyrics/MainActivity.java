@@ -65,16 +65,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openDeezerLoginActivity(){
-        checkIfAnyValidAuthToken();
+        /*checkIfAnyValidAuthToken();
 
-        if (auth_token.isEmpty()) {
+        if (auth_token == null) {
             Intent intent = new Intent(this, DeezerLoginActivity.class);
             startActivity(intent);
         } else {
             Intent intent = new Intent(this, SearchActivity.class);
             intent.putExtra("auth", auth_token);
             startActivity(intent);
-        }
+        }*/
+
+        Intent intent = new Intent(this, SearchActivity.class);
+        startActivity(intent);
     }
 
     public void openSearchActivity() {
