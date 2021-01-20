@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">FindTheLyrics</string>
+    <string name="player_error">Error initializing YouTube player</string>
 </resources>
