@@ -42,23 +42,10 @@ public class DeezerLoginActivity extends AppCompatActivity {
                 + "&response_type=token");
     }
 
-    public void oauthLogin(final String url)
+    public void startWithSid(String sid)
     {
-        StorageReader dbReader = new StorageReader(getApplicationContext());
-        SQLiteDatabase db = dbReader.getWritableDatabase();
-
-        String token = url.split("&")[0].split("=")[1];
-        String expiration = url.split("&")[1].split("=")[1];
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, Integer.parseInt(expiration));
-
-        ContentValues values = new ContentValues();
-        values.put(StorageContract.StorageEntry.AUTH_COLUMN_KEY, token);
-        values.put(StorageContract.StorageEntry.AUTH_COLUMN_EXPIRATION_TIME, calendar.getTime().toString());
-        db.insert(StorageContract.StorageEntry.AUTH_TABLE_NAME, null, values);
-
         Intent intent = new Intent(this, SearchActivity.class);
-        intent.putExtra("auth", token);
+        intent.putExtra("sid", sid);
         startActivity(intent);
 
         finish();

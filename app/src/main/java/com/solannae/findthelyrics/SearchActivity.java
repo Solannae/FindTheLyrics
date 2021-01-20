@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,7 +30,8 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.S
 
     private DeezerSongRequestModel response;
     private DeezerSongModel[] dataset;
-    private LyricsModel playedLyrics;
+    private JSONArray playedLyrics;
+    private String sid;
     private String auth_token;
 
     @Override
@@ -39,6 +41,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.S
         searchView = findViewById(R.id.songList);
         searchTextInput = findViewById(R.id.searchTextInput);
         searchButton = findViewById(R.id.searchButton);
+        sid = getIntent().getStringExtra("sid");
         GetAuthToken();
 
         searchView.setHasFixedSize(true);
@@ -60,13 +63,14 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.S
                 .build();
 
         SearchService service = retrofit.create(SearchService.class);
-        service.getAuthToken("deezer.getUserData", 3, "1.0", "", 1).enqueue(new Callback<String>() {
+        service.getAuthToken(sid, "deezer.getUserData", 3, "1.0", "").enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
                 if (response.body() != null) {
                     try {
                         String respBody = response.body();
                         auth_token = (new JSONObject(respBody)).getJSONObject("results").getString("checkForm");
+                        Log.i("Deezer", "Auth token: " + auth_token);
                     } catch (JSONException e) {
                         Log.e("Retrofit", "Failed to read JSON Cookies");
                     }
@@ -106,20 +110,24 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.S
     {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.deezer.com/")
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
         SearchService service = retrofit.create(SearchService.class);
-        service.getLyrics("song.getLyrics", "1.0", auth_token, songId).enqueue(new Callback<LyricsModel>() {
+        service.getLyrics(sid, "song.getLyrics", "1.0", auth_token, songId).enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<LyricsModel> call, Response<LyricsModel> response) {
-                if (response.body().getResults() != null) {
-                    playedLyrics = response.body();
+            public void onResponse(Call<String> call, Response<String> response) {
+                try {
+                    JSONObject tmp = new JSONObject(response.body());
+                    playedLyrics = tmp.getJSONObject("results").getJSONArray("LYRICS_SYNC_JSON");
+                    StartGameActivity();
+                } catch (JSONException e) {
+                    Log.e("Retrofit", "Failed to read lyrics from response body");
                 }
             }
 
             @Override
-            public void onFailure(Call<LyricsModel> call, Throwable t) {
+            public void onFailure(Call<String> call, Throwable t) {
                 Log.e("Retrofit", "Failed to get lyrics from Deezer API. Auth_Token: " + auth_token);
             }
         });
@@ -133,18 +141,15 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.S
         searchView.setAdapter(adapter);
     }
 
+    private void StartGameActivity()
+    {
+        Intent intent = new Intent(this, GameActivity.class);
+        intent.putExtra("lyrics", playedLyrics.toString());
+        startActivity(intent);
+    }
+
     @Override
     public void onListItemClick(int position) {
         GetLyrics(dataset[position].getId());
-
-        if (playedLyrics != null) {
-            Intent intent = new Intent(this, GameActivity.class);
-            intent.putExtra("lyrics", playedLyrics);
-            startActivity(intent);
-        }
-        else
-        {
-            Toast.makeText(this, "Couldn't find any lyrics for that song: " + dataset[position].getId(), Toast.LENGTH_SHORT).show();
-        }
     }
 }
