@@ -46,6 +46,8 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         //videoId = "Y0EcKR05Ac4";
         youTubeView.initialize(YTConfig.YOUTUBE_API_KEY, (YouTubePlayer.OnInitializedListener) this);
 
+
+
     }
 
     @Override
@@ -59,7 +61,6 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             getFirstVideoId("The Weeknd Blinding Lights");
             System.out.println("------------");
             System.out.println("current vid: "+videoId);
-            System.out.println(ytPlayer==null);
             ytPlayer.cueVideo(videoId);
 
 
@@ -111,7 +112,6 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                             String vId = id.getString("videoId");
                             System.out.println(vId);
                             videoId = vId;
-
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
