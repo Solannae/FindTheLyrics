@@ -62,7 +62,7 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         this.ytPlayer = youTubePlayer;
 
         if (!b) {
-            getFirstVideoId("The Weeknd Blinding Lights");
+            getFirstVideoId(query);
         }
     }
 
@@ -103,9 +103,7 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                     public void onResponse(JSONObject response) {
                         try {
                             Log.d("Volley response", response.toString());
-                            //JSONObject items = response.getJSONObject("items");
                             JSONArray items = response.getJSONArray("items");
-                            //JSONObject id = response.getJSONObject("id");
                             JSONObject jo = items.getJSONObject(0);
                             JSONObject id = jo.getJSONObject("id");
                             String vId = id.getString("videoId");
