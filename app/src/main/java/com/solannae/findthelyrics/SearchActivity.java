@@ -123,7 +123,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.S
                     playedLyrics = tmp.getJSONObject("results").getJSONArray("LYRICS_SYNC_JSON");
                     StartGameActivity();
                 } catch (JSONException e) {
-                    Log.e("Retrofit", "Failed to read lyrics from response body");
+                    Log.e("Retrofit", "Failed to read lyrics from response body: " + response.body());
                 }
             }
 

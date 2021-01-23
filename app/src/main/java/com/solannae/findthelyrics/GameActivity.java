@@ -20,6 +20,7 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
@@ -30,6 +31,7 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     private MyPlayerStateChangeListener playerStateChangeListener;
     private String videoId = "0RU_05zpETo";
     private String query;
+    private JSONObject lyrics;
     private YouTubePlayer ytPlayer;
 
 
@@ -39,15 +41,17 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         setContentView(R.layout.activity_game);
         query = getIntent().getStringExtra("query");
 
+        try {
+            lyrics = new JSONObject(getIntent().getStringExtra("lyrics"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         playerStateChangeListener = new MyPlayerStateChangeListener();
         playbackEventListener = new MyPlaybackEventListener();
 
         youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
         youTubeView.initialize(YTConfig.YOUTUBE_API_KEY, (YouTubePlayer.OnInitializedListener) this);
-
-
-
     }
 
     @Override
