@@ -33,6 +33,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.S
     private JSONArray playedLyrics;
     private String sid;
     private String auth_token;
+    private String query;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,12 +145,14 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.S
     private void StartGameActivity()
     {
         Intent intent = new Intent(this, GameActivity.class);
+        intent.putExtra("query", query);
         intent.putExtra("lyrics", playedLyrics.toString());
         startActivity(intent);
     }
 
     @Override
     public void onListItemClick(int position) {
+        query = dataset[position].getArtist().getName() + " " + dataset[position].getTitle();
         GetLyrics(dataset[position].getId());
     }
 }

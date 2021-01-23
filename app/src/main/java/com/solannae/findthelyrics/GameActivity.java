@@ -29,6 +29,7 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     private MyPlaybackEventListener playbackEventListener;
     private MyPlayerStateChangeListener playerStateChangeListener;
     private String videoId = "0RU_05zpETo";
+    private String query;
     private YouTubePlayer ytPlayer;
 
 
@@ -36,6 +37,7 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        query = getIntent().getStringExtra("query");
 
 
         playerStateChangeListener = new MyPlayerStateChangeListener();
