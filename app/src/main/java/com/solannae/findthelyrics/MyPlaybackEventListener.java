@@ -6,12 +6,10 @@ public class MyPlaybackEventListener implements YouTubePlayer.PlaybackEventListe
 
     @Override
     public void onPlaying() {
-
     }
 
     @Override
     public void onPaused() {
-
     }
 
     @Override
@@ -23,10 +21,6 @@ public class MyPlaybackEventListener implements YouTubePlayer.PlaybackEventListe
     public void onBuffering(boolean b) {
 
     }
-
-
-
-
 
     @Override
     public void onSeekTo(int i) {

@@ -4,7 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,35 +27,68 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Random;
+
 public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.OnInitializedListener {
 
     private static final int RECOVERY_REQUEST = 1;
+    private YouTubePlayer ytPlayer;
     private YouTubePlayerView youTubeView;
     private MyPlaybackEventListener playbackEventListener;
     private MyPlayerStateChangeListener playerStateChangeListener;
-    private String videoId = "0RU_05zpETo";
+
     private String query;
-    private JSONObject lyrics;
-    private YouTubePlayer ytPlayer;
+    private JSONArray lyrics;
+    private TextView lyricsView;
+    private TextView answerView;
+    private Button submitButton;
+
+    private JSONObject nextLine;
+    private Handler handler;
+    private Runnable refresh;
+
+    private String answer;
+    private int toGuess;
+    private int currentIndex;
+
+    private String videoId = "0RU_05zpETo";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+
         query = getIntent().getStringExtra("query");
 
         try {
-            lyrics = new JSONObject(getIntent().getStringExtra("lyrics"));
+            lyrics = new JSONArray(getIntent().getStringExtra("lyrics"));
+            for (int i = 0; i < lyrics.length(); ++i)
+            {
+                JSONObject obj = lyrics.getJSONObject(i);
+                if (!obj.has("duration"))
+                {
+                    lyrics.remove(i);
+                    --i;
+                }
+            }
+            toGuess = (new Random()).nextInt(lyrics.length() / 2 - 6) + 6;
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
+        lyricsView = findViewById(R.id.lyricsView);
+        handler = new Handler(Looper.getMainLooper());
+        refresh = () -> displayLyrics();
+
+        answerView = findViewById(R.id.answerView);
+        submitButton = findViewById(R.id.submitButton);
+
         playerStateChangeListener = new MyPlayerStateChangeListener();
         playbackEventListener = new MyPlaybackEventListener();
 
-        youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
-        youTubeView.initialize(YTConfig.YOUTUBE_API_KEY, (YouTubePlayer.OnInitializedListener) this);
+        youTubeView = findViewById(R.id.youtube_view);
+        youTubeView.initialize(YTConfig.YOUTUBE_API_KEY, this);
     }
 
     @Override
@@ -110,6 +147,9 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                             System.out.println(vId);
                             videoId = vId;
                             ytPlayer.cueVideo(videoId);
+                            Thread.sleep(5000);
+                            ytPlayer.play();
+                            displayLyrics();
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -121,8 +161,66 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             }
         });
         queue.add(request);
+    }
 
+    private void displayLyrics() {
+        if (currentIndex == toGuess)
+        {
+            ytPlayer.pause();
+            handler.removeCallbacks(refresh);
+            submitButton.setEnabled(true);
 
+            try {
+                answer = nextLine.getString("line");
+                int words = answer.split(" ").length;
+                StringBuilder line = new StringBuilder();
+                for (int i = 0; i < words; ++i)
+                {
+                    line.append("___ ");
+                }
+                lyricsView.setText(line.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
 
+        else if (nextLine != null)
+        {
+            try {
+                lyricsView.setText(nextLine.getString("line"));
+                handler.postDelayed(refresh, nextLine.getInt("duration"));
+                lyrics.remove(0);
+                nextLine = lyrics.getJSONObject(0);
+                ++currentIndex;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else
+        {
+            try {
+                nextLine = lyrics.getJSONObject(0);
+                handler.postDelayed(refresh, nextLine.getInt("milliseconds"));
+                ++currentIndex;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void Validate(View view)
+    {
+        String text1 = answer.toLowerCase();
+        String text2 = answerView.getText().toString().toLowerCase();
+        Log.d("Answer", "Provided: " + text2 + " || Expected: " + text1);
+
+        if (text1.equals(text2))
+        {
+            Toast.makeText(this, "Congratulations !", Toast.LENGTH_LONG).show();
+        }
+        else
+        {
+            Toast.makeText(this, "Unlucky ! The answer was:\n" + text1, Toast.LENGTH_LONG).show();
+        }
     }
 }
