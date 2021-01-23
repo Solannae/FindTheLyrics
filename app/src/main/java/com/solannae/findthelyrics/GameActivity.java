@@ -42,8 +42,6 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         playbackEventListener = new MyPlaybackEventListener();
 
         youTubeView = (YouTubePlayerView) findViewById(R.id.youtube_view);
-        //getFirstVideoId("The Weeknd Blinding Lights");
-        //videoId = "Y0EcKR05Ac4";
         youTubeView.initialize(YTConfig.YOUTUBE_API_KEY, (YouTubePlayer.OnInitializedListener) this);
 
 
@@ -59,11 +57,6 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
         if (!b) {
             getFirstVideoId("The Weeknd Blinding Lights");
-            System.out.println("------------");
-            System.out.println("current vid: "+videoId);
-            ytPlayer.cueVideo(videoId);
-
-
         }
     }
 
@@ -112,6 +105,7 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                             String vId = id.getString("videoId");
                             System.out.println(vId);
                             videoId = vId;
+                            ytPlayer.cueVideo(videoId);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
