@@ -33,9 +33,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="550dp"
+        android:backgroundTint="#018786"
         android:enabled="false"
         android:onClick="Validate"
         android:text="Submit"
+        android:textColor="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
