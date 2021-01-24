@@ -148,6 +148,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.S
         intent.putExtra("query", query);
         intent.putExtra("lyrics", playedLyrics.toString());
         startActivity(intent);
+        finish();
     }
 
     @Override

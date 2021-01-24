@@ -48,6 +48,7 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
     private Runnable refresh;
 
     private String answer;
+    private long answerStart;
     private int toGuess;
     private int currentIndex;
 
@@ -149,6 +150,7 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
                             ytPlayer.cueVideo(videoId);
                             Thread.sleep(5000);
                             ytPlayer.play();
+                            Thread.sleep(300);
                             displayLyrics();
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -169,6 +171,7 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
             ytPlayer.pause();
             handler.removeCallbacks(refresh);
             submitButton.setEnabled(true);
+            answerStart = System.nanoTime();
 
             try {
                 answer = nextLine.getString("line");
@@ -210,17 +213,43 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
 
     public void Validate(View view)
     {
+        long seconds = (int)((System.nanoTime() - answerStart) / 1000000000);
+
+        int correctnessShare = 75;
+        int speedShare = 25;
+        int score = 0;
+
         String text1 = answer.toLowerCase();
         String text2 = answerView.getText().toString().toLowerCase();
         Log.d("Answer", "Provided: " + text2 + " || Expected: " + text1);
 
+        String[] text1split = text1.split(" ");
+        String[] text2split = text2.split(" ");
+
+        for (int i = 0; i < text1split.length; ++i)
+        {
+            if (text1split[i].equals(text2split[i]))
+            {
+                score += (int)(correctnessShare / text1split.length);
+            }
+        }
+
+        score += (seconds < speedShare) ? speedShare - seconds : 0;
+
+        Intent intent = new Intent(this, LeaderBoardActivity.class);
+
         if (text1.equals(text2))
         {
-            Toast.makeText(this, "Congratulations !", Toast.LENGTH_LONG).show();
+            intent.putExtra("message", "Congratulations!\nYou guessed the correct answer.\nScore: " + score);
         }
         else
         {
-            Toast.makeText(this, "Unlucky ! The answer was:\n" + text1, Toast.LENGTH_LONG).show();
+            intent.putExtra("message", "Unlucky ! The answer was:\n" + text1 + "\nScore: " + score);
         }
+
+        intent.putExtra("query", getIntent().getStringExtra("query"));
+        intent.putExtra("lyrics", getIntent().getStringExtra("lyrics"));
+        startActivity(intent);
+        finish();
     }
 }
