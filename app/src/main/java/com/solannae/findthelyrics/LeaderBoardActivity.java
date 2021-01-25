@@ -15,7 +15,7 @@ public class LeaderBoardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leader_board);
-        
+
         scoreView = findViewById(R.id.scoreTextView);
 
         scoreView.setText(getIntent().getStringExtra("message"));

@@ -226,7 +226,9 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         String[] text1split = text1.split(" ");
         String[] text2split = text2.split(" ");
 
-        for (int i = 0; i < text1split.length; ++i)
+        int minLength = Math.min(text1split.length, text2split.length);
+
+        for (int i = 0; i < minLength; ++i)
         {
             if (text1split[i].equals(text2split[i]))
             {
