@@ -124,6 +124,7 @@ public class SearchActivity extends AppCompatActivity implements SearchAdapter.S
                     StartGameActivity();
                 } catch (JSONException e) {
                     Log.e("Retrofit", "Failed to read lyrics from response body: " + response.body());
+                    Toast.makeText(SearchActivity.this, response.body(), Toast.LENGTH_SHORT).show();
                 }
             }
 

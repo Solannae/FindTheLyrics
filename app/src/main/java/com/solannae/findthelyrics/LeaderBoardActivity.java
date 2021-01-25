@@ -9,6 +9,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class LeaderBoardActivity extends AppCompatActivity {
+    private Button playAgainButton;
+    private Button changeTrackButton;
     private TextView scoreView;
 
     @Override
@@ -16,9 +18,18 @@ public class LeaderBoardActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_leader_board);
 
+        playAgainButton = findViewById(R.id.playAgainButton);
+        changeTrackButton = findViewById(R.id.changeTrackButton);
         scoreView = findViewById(R.id.scoreTextView);
-
         scoreView.setText(getIntent().getStringExtra("message"));
+
+        if (!getIntent().hasExtra("query"))
+        {
+            playAgainButton.setVisibility(View.INVISIBLE);
+            playAgainButton.setEnabled(false);
+            changeTrackButton.setVisibility(View.INVISIBLE);
+            changeTrackButton.setEnabled(false);
+        }
     }
 
     public void onPlayAgain(View view) {

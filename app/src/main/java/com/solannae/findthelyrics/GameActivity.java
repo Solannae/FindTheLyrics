@@ -254,4 +254,10 @@ public class GameActivity extends YouTubeBaseActivity implements YouTubePlayer.O
         startActivity(intent);
         finish();
     }
+
+    @Override
+    protected void onDestroy() {
+        handler.removeCallbacks(refresh);
+        super.onDestroy();
+    }
 }
